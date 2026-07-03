@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Rupak Adhikari</title>
+  <meta name="description" content="Local administration dashboard for managing projects, writing blog posts, and committing updates to GitHub.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Auth Password Prompt Overlay -->
+  <div id="auth-overlay" class="auth-overlay">
+    <div class="auth-modal">
+      <h2 class="auth-title">Admin Login</h2>
+      <p class="auth-subtitle">Enter your passphrase to access the content dashboard.</p>
+      
+      <form id="auth-form">
+        <div class="form-group" style="text-align: left; margin-bottom: 2rem;">
+          <label for="auth-password">Passphrase</label>
+          <input type="password" id="auth-password" class="form-control" placeholder="••••••••" required autofocus>
+          <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.5rem;">
+            Hint: The default password is <strong>rupak@123</strong>
+          </span>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Unlock Dashboard</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Ambient background decorations -->
+  <div class="ambient-bg blob-1"></div>
+  <div class="ambient-bg blob-2"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav-wrapper">
+      <a href="index.html" class="logo">
+        Rupak Adhikari<span class="logo-dot"></span>
+      </a>
+      
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="admin.html" class="active">Admin</a></li>
+      </ul>
+
+      <div class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Admin Title and Tab Navigation -->
+  <section class="container admin-header">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <h1 class="section-title" style="margin-bottom: 0.5rem;">Content <span>Manager</span></h1>
+        <p class="text-secondary">Create, update, and publish content to your portfolio website.</p>
+      </div>
+      <button onclick="logout()" class="btn btn-secondary" style="padding: 0.5rem 1.25rem; font-size: 0.85rem;">Lock CMS</button>
+    </div>
+
+    <div class="admin-nav">
+      <button class="admin-tab-btn active" data-tab="dashboard">Dashboard</button>
+      <button class="admin-tab-btn" data-tab="projects">Projects</button>
+      <button class="admin-tab-btn" data-tab="blog">Blog Posts</button>
+      <button class="admin-tab-btn" data-tab="sync">Sync & Settings</button>
+    </div>
+  </section>
+
+  <!-- TAB: Dashboard Section -->
+  <section id="dashboard-section" class="admin-content-section active container">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-bottom: 4rem;">
+      <div class="contact-form" style="padding: 2rem; display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <span class="contact-label" style="font-size: 0.9rem;">Total Projects</span>
+          <span class="contact-value" id="stat-total-projects" style="font-size: 2.5rem; font-family: var(--font-serif); color: var(--accent-sage);">0</span>
+        </div>
+        <div style="font-size: 2.5rem; opacity: 0.3;">📁</div>
+      </div>
+      
+      <div class="contact-form" style="padding: 2rem; display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <span class="contact-label" style="font-size: 0.9rem;">Blog Articles</span>
+          <span class="contact-value" id="stat-total-posts" style="font-size: 2.5rem; font-family: var(--font-serif); color: var(--accent-terracotta);">0</span>
+        </div>
+        <div style="font-size: 2.5rem; opacity: 0.3;">✍</div>
+      </div>
+
+      <div class="contact-form" style="padding: 2rem; display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <span class="contact-label" style="font-size: 0.9rem;">Last Checked Sync</span>
+          <span class="contact-value" id="stat-last-updated" style="font-size: 1.15rem; font-weight: 600; line-height: 1.4; display: block; margin-top: 0.75rem;">Just now</span>
+        </div>
+        <div style="font-size: 2.5rem; opacity: 0.3;">⏱</div>
+      </div>
+    </div>
+
+    <div class="contact-form" style="max-width: 750px;">
+      <h3 class="contact-info-title" style="font-size: 1.5rem;">How it works</h3>
+      <p style="color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.6;">
+        All modifications you perform in this panel (editing, adding, or deleting) will be saved to your browser's local storage. This allows you to immediately click around pages on your local site to review updates.
+      </p>
+      <p style="color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.6;">
+        To make these updates public on your live site, go to the <strong>Sync & Settings</strong> tab. You can download the new configuration files and overwrite the files in your repo folder, or input a GitHub token to commit changes directly.
+      </p>
+      <div style="display: flex; gap: 1rem;">
+        <button class="btn btn-primary" onclick="document.querySelector('[data-tab=projects]').click();">Manage Projects</button>
+        <button class="btn btn-secondary" onclick="document.querySelector('[data-tab=sync]').click();">Sync Settings</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB: Projects Section -->
+  <section id="projects-section" class="admin-content-section container">
+    <div class="admin-panel-grid">
+      <!-- Edit/List Column -->
+      <div class="admin-list-wrapper">
+        <h3 class="admin-list-title">Existing Projects</h3>
+        <div id="admin-projects-list" class="admin-list-items">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+
+      <!-- Form Column -->
+      <div class="admin-form-wrapper">
+        <h3 id="admin-project-form-title" class="admin-form-title">Add New Project</h3>
+        <form id="project-form">
+          <div class="form-group">
+            <label for="proj-title">Project Title</label>
+            <input type="text" id="proj-title" class="form-control" required placeholder="E.g. Aura Minimal Editor">
+          </div>
+
+          <div class="form-group">
+            <label for="proj-desc">Description</label>
+            <textarea id="proj-desc" class="form-control" required placeholder="A brief description of the project features..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="proj-image">Cover Image URL</label>
+            <input type="url" id="proj-image" class="form-control" placeholder="https://unsplash.com/..." value="">
+          </div>
+
+          <div class="form-group">
+            <label for="proj-tags">Tags (comma-separated)</label>
+            <input type="text" id="proj-tags" class="form-control" placeholder="Javascript, CSS, API">
+          </div>
+
+          <div class="form-group">
+            <label for="proj-link">Redirecting Link</label>
+            <input type="url" id="proj-link" class="form-control" required placeholder="https://github.com/yourusername/repo">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="form-group">
+              <label for="proj-date">Publish Date</label>
+              <input type="date" id="proj-date" class="form-control">
+            </div>
+            <div class="form-group" style="display: flex; align-items: center; height: 100%; padding-top: 1.8rem;">
+              <input type="checkbox" id="proj-featured" style="width: 18px; height: 18px; margin-right: 0.5rem; accent-color: var(--accent-sage);">
+              <label for="proj-featured" style="margin-bottom: 0; display: inline; cursor: pointer;">Feature on Home</label>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem;">
+            <button type="submit" class="btn btn-primary">Save Project</button>
+            <button type="button" id="cancel-project-edit" class="btn btn-secondary" style="display: none;">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB: Blog Posts Section -->
+  <section id="blog-section" class="admin-content-section container">
+    <div class="admin-panel-grid">
+      <!-- Edit/List Column -->
+      <div class="admin-list-wrapper">
+        <h3 class="admin-list-title">Existing Blog Posts</h3>
+        <div id="admin-posts-list" class="admin-list-items">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+
+      <!-- Form Column -->
+      <div class="admin-form-wrapper">
+        <h3 id="admin-post-form-title" class="admin-form-title">Add New Blog Post</h3>
+        <form id="post-form">
+          <div class="form-group">
+            <label for="post-title-input">Article Title</label>
+            <input type="text" id="post-title-input" class="form-control" required placeholder="E.g. The beauty of writing vanilla code">
+          </div>
+
+          <div class="form-group">
+            <label for="post-excerpt">Excerpt</label>
+            <input type="text" id="post-excerpt" class="form-control" required placeholder="A short description shown on the blog cards feed...">
+          </div>
+
+          <div class="form-group">
+            <label for="post-content">Content (Markdown supported)</label>
+            <textarea id="post-content" class="form-control" required placeholder="Use markdown to structure: # Headers, - Lists, **Bold** etc..." style="min-height: 240px; font-family: monospace; font-size: 0.95rem;"></textarea>
+          </div>
+
+          <!-- Live Markdown Preview -->
+          <div class="form-group">
+            <label>Live Preview</label>
+            <div id="post-markdown-preview" class="post-content" style="border: 1px solid var(--border-subtle); background: var(--bg-input); padding: 1.5rem; border-radius: 6px; max-height: 250px; overflow-y: auto; font-size: 0.95rem; line-height: 1.6;">
+              <p class="text-muted">Type markdown content to see live preview...</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="post-image-input">Feature Image URL</label>
+            <input type="url" id="post-image-input" class="form-control" placeholder="https://unsplash.com/...">
+          </div>
+
+          <div class="form-group">
+            <label for="post-tags-input">Tags (comma-separated)</label>
+            <input type="text" id="post-tags-input" class="form-control" placeholder="Design, Tutorial, Philosophy">
+          </div>
+
+          <div class="form-group">
+            <label for="post-author-input">Author Name</label>
+            <input type="text" id="post-author-input" class="form-control" placeholder="Rupak Adhikari" value="Rupak Adhikari">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="form-group">
+              <label for="post-date-input">Publish Date</label>
+              <input type="date" id="post-date-input" class="form-control">
+            </div>
+            <div class="form-group" style="display: flex; align-items: center; height: 100%; padding-top: 1.8rem;">
+              <input type="checkbox" id="post-featured-input" style="width: 18px; height: 18px; margin-right: 0.5rem; accent-color: var(--accent-sage);">
+              <label for="post-featured-input" style="margin-bottom: 0; display: inline; cursor: pointer;">Feature on Home</label>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem;">
+            <button type="submit" class="btn btn-primary">Save Article</button>
+            <button type="button" id="cancel-post-edit" class="btn btn-secondary" style="display: none;">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB: Sync Section -->
+  <section id="sync-section" class="admin-content-section container">
+    <div class="admin-panel-grid">
+      <!-- File Downloads -->
+      <div class="admin-form-wrapper">
+        <h3 class="admin-form-title">Option A: Manual File Sync</h3>
+        <p class="sync-section-description">
+          Download the modified config files to your local drive, then drag and drop or commit them to replace the existing JSON files in your project directory.
+        </p>
+        
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <button id="btn-download-projects" class="btn btn-secondary" style="justify-content: flex-start;">
+            <span style="font-size: 1.25rem;">↓</span> Download projects.json
+          </button>
+          <button id="btn-download-posts" class="btn btn-secondary" style="justify-content: flex-start;">
+            <span style="font-size: 1.25rem;">↓</span> Download posts.json
+          </button>
+        </div>
+      </div>
+
+      <!-- GitHub API Sync -->
+      <div class="admin-form-wrapper">
+        <h3 class="admin-form-title">Option B: GitHub Direct API Sync</h3>
+        <p class="sync-section-description">
+          Enter a GitHub Personal Access Token to write directly to your repo files. Changes sync to GitHub Pages without leaving the browser.
+        </p>
+
+        <div class="alert-box">
+          <div class="alert-box-title">🔒 Local Storage Encryption</div>
+          <div class="alert-box-desc">
+            Your PAT token is stored strictly in your local browser sandbox. It is transmitted directly to the api.github.com servers over SSL, never to any intermediary.
+          </div>
+        </div>
+
+        <form id="github-sync-form">
+          <div class="form-group">
+            <label for="gh-owner">GitHub Username / Owner</label>
+            <input type="text" id="gh-owner" class="form-control" placeholder="E.g. elenavance" required>
+          </div>
+
+          <div class="form-group">
+            <label for="gh-repo">Repository Name</label>
+            <input type="text" id="gh-repo" class="form-control" placeholder="E.g. portfolio-website" required>
+          </div>
+
+          <div class="form-group">
+            <label for="gh-branch">Deployment Branch</label>
+            <input type="text" id="gh-branch" class="form-control" placeholder="E.g. main or gh-pages" value="main">
+          </div>
+
+          <div class="form-group">
+            <label for="gh-pat">Personal Access Token (PAT)</label>
+            <input type="password" id="gh-pat" class="form-control" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxx" required>
+            <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.5rem;">
+              Required scopes: <code>repo</code> or <code>public_repo</code> permissions.
+            </span>
+          </div>
+
+          <button type="submit" class="btn btn-secondary" style="width: 100%; margin-bottom: 1rem;">Save Sync Credentials</button>
+        </form>
+
+        <div class="sync-actions-group">
+          <button id="btn-test-github" class="btn btn-secondary">Test Connection</button>
+          <button id="btn-commit-github" class="btn btn-primary">Commit to GitHub</button>
+        </div>
+
+        <div class="sync-status-indicator">
+          <div id="sync-dot" class="status-dot"></div>
+          <span id="sync-text" class="text-muted">Not connected</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-wrapper">
+      <p>&copy; 2026 Rupak Adhikari. Hand-coded with patience.</p>
+      <div class="footer-socials">
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Message -->
+  <div id="toast" class="toast-msg">Notification message</div>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

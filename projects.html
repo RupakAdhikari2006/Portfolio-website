@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects | Rupak Adhikari</title>
+  <meta name="description" content="A curated gallery of hand-crafted applications and projects built by Rupak Adhikari.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Ambient background decorations -->
+  <div class="ambient-bg blob-1"></div>
+  <div class="ambient-bg blob-2"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav-wrapper">
+      <a href="index.html" class="logo">
+        Rupak Adhikari<span class="logo-dot"></span>
+      </a>
+      
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="projects.html" class="active">Projects</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="admin.html">Admin</a></li>
+      </ul>
+
+      <div class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Projects Page Title and Search -->
+  <section class="container" style="padding-top: 10rem; padding-bottom: 2rem;">
+    <h1 class="section-title">Curated <span>Projects</span></h1>
+    <p class="text-secondary" style="max-width: 600px; margin-bottom: 3rem; font-size: 1.1rem;">
+      A gallery of experiments, tools, and platforms I have designed and built. Each project is crafted with semantic HTML, customized CSS, and modular JS.
+    </p>
+
+    <!-- Search & Filter Controls -->
+    <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 4rem;">
+      <div style="max-width: 450px; width: 100%;">
+        <input type="text" id="project-search" class="form-control" placeholder="Search projects by title, tags, or description..." style="border-radius: 4px;">
+      </div>
+      
+      <div class="project-filters">
+        <button class="filter-btn active" data-filter="all">All Projects</button>
+        <button class="filter-btn" data-filter="javascript">Javascript</button>
+        <button class="filter-btn" data-filter="web app">Web Apps</button>
+        <button class="filter-btn" data-filter="offline">Offline</button>
+        <button class="filter-btn" data-filter="charts">Data Viz</button>
+      </div>
+    </div>
+
+    <!-- Projects Grid -->
+    <div class="projects-grid">
+      <!-- Loaded dynamically via js/app.js -->
+      <div style="grid-column: 1/-1; text-align: center; padding: 3rem 0; color: var(--text-secondary);">
+        Loading gallery...
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-wrapper">
+      <p>&copy; 2026 Rupak Adhikari. Hand-coded with patience.</p>
+      <div class="footer-socials">
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast-msg">Notification message</div>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+</body>
+</html>

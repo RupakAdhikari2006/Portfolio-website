@@ -1,0 +1,18 @@
+{
+  "name": "portfolio-website",
+  "version": "1.0.0",
+  "description": "Static portfolio website with a blog, redirecting projects, and GitHub REST API sync capabilities.",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx -y vite"
+  },
+  "keywords": [
+    "portfolio",
+    "blog",
+    "static",
+    "cms",
+    "github-pages"
+  ],
+  "author": "Elena Vance",
+  "license": "MIT"
+}
