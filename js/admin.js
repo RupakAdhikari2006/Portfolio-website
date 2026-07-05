@@ -56,6 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Image upload handlers
+  setupImageUpload();
+
   // Sync settings and operations setup
   setupSyncAndGitHub();
 });
@@ -126,22 +129,12 @@ function setupTabs() {
  * Load projects and posts from storage and render them on dashboard and edit lists
  */
 async function loadAdminData() {
-  // Load from local storage or load dummy data from files first if empty
-  const localProj = localStorage.getItem('portfolio_projects');
-  const localPosts = localStorage.getItem('portfolio_posts');
+  // Always load fresh from JSON files (clearing any old cached data)
+  localStorage.removeItem('portfolio_projects');
+  localStorage.removeItem('portfolio_posts');
 
-  if (localProj) {
-    projects = JSON.parse(localProj);
-  } else {
-    // If not cached, fetch from JSON
-    projects = await fetchJSON('projects');
-  }
-
-  if (localPosts) {
-    posts = JSON.parse(localPosts);
-  } else {
-    posts = await fetchJSON('posts');
-  }
+  projects = await fetchJSON('projects');
+  posts = await fetchJSON('posts');
 
   renderAdminProjects();
   renderAdminPosts();
@@ -206,7 +199,10 @@ function handleProjectSubmit(e) {
   
   const title = document.getElementById('proj-title').value;
   const description = document.getElementById('proj-desc').value;
-  const image = document.getElementById('proj-image').value || 'https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=800&q=80';
+  // Prefer base64 uploaded image over URL field
+  const uploadedImage = document.getElementById('proj-image-preview-img')?.src;
+  const urlImage = document.getElementById('proj-image').value;
+  const image = (uploadedImage && uploadedImage.startsWith('data:')) ? uploadedImage : (urlImage || '');
   const tagsInput = document.getElementById('proj-tags').value;
   const link = document.getElementById('proj-link').value;
   const featured = document.getElementById('proj-featured').checked;
@@ -253,11 +249,23 @@ function editProject(id) {
   document.getElementById('admin-project-form-title').textContent = 'Edit Project';
   document.getElementById('proj-title').value = proj.title;
   document.getElementById('proj-desc').value = proj.description;
-  document.getElementById('proj-image').value = proj.image;
   document.getElementById('proj-tags').value = proj.tags.join(', ');
   document.getElementById('proj-link').value = proj.link;
   document.getElementById('proj-featured').checked = proj.featured;
   document.getElementById('proj-date').value = proj.date;
+
+  // Show image in preview if available
+  const previewBox = document.getElementById('proj-image-preview');
+  const previewImg = document.getElementById('proj-image-preview-img');
+  const urlInput = document.getElementById('proj-image');
+  if (proj.image && proj.image.startsWith('data:')) {
+    previewImg.src = proj.image;
+    previewBox.style.display = 'block';
+    urlInput.value = '';
+  } else {
+    urlInput.value = proj.image || '';
+    previewBox.style.display = 'none';
+  }
   
   document.getElementById('cancel-project-edit').style.display = 'inline-flex';
 }
@@ -279,6 +287,11 @@ function resetProjectForm() {
   document.getElementById('project-form').reset();
   document.getElementById('proj-date').value = new Date().toISOString().split('T')[0];
   document.getElementById('cancel-project-edit').style.display = 'none';
+  // Clear image preview
+  const previewBox = document.getElementById('proj-image-preview');
+  const previewImg = document.getElementById('proj-image-preview-img');
+  if (previewBox) previewBox.style.display = 'none';
+  if (previewImg) previewImg.src = '';
 }
 
 function saveProjectsToStorage() {
@@ -317,7 +330,10 @@ function handlePostSubmit(e) {
   const title = document.getElementById('post-title-input').value;
   const excerpt = document.getElementById('post-excerpt').value;
   const content = document.getElementById('post-content').value;
-  const image = document.getElementById('post-image-input').value || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80';
+  // Prefer base64 uploaded image over URL field
+  const uploadedImage = document.getElementById('post-image-preview-img')?.src;
+  const urlImage = document.getElementById('post-image-input').value;
+  const image = (uploadedImage && uploadedImage.startsWith('data:')) ? uploadedImage : (urlImage || '');
   const tagsInput = document.getElementById('post-tags-input').value;
   const author = document.getElementById('post-author-input').value || 'Rupak Adhikari';
   const featured = document.getElementById('post-featured-input').checked;
@@ -366,11 +382,23 @@ function editPost(id) {
   document.getElementById('post-title-input').value = post.title;
   document.getElementById('post-excerpt').value = post.excerpt;
   document.getElementById('post-content').value = post.content;
-  document.getElementById('post-image-input').value = post.image;
   document.getElementById('post-tags-input').value = post.tags.join(', ');
   document.getElementById('post-author-input').value = post.author || 'Rupak Adhikari';
   document.getElementById('post-featured-input').checked = post.featured;
   document.getElementById('post-date-input').value = post.date;
+
+  // Show image in preview if available
+  const previewBox = document.getElementById('post-image-preview');
+  const previewImg = document.getElementById('post-image-preview-img');
+  const urlInput = document.getElementById('post-image-input');
+  if (post.image && post.image.startsWith('data:')) {
+    previewImg.src = post.image;
+    previewBox.style.display = 'block';
+    urlInput.value = '';
+  } else {
+    urlInput.value = post.image || '';
+    previewBox.style.display = 'none';
+  }
 
   // Trigger markdown preview
   const postPreviewEl = document.getElementById('post-markdown-preview');
@@ -399,6 +427,11 @@ function resetPostForm() {
   document.getElementById('post-date-input').value = new Date().toISOString().split('T')[0];
   document.getElementById('post-markdown-preview').innerHTML = '<p class="text-muted">Type markdown content to see live preview...</p>';
   document.getElementById('cancel-post-edit').style.display = 'none';
+  // Clear image preview
+  const previewBox = document.getElementById('post-image-preview');
+  const previewImg = document.getElementById('post-image-preview-img');
+  if (previewBox) previewBox.style.display = 'none';
+  if (previewImg) previewImg.src = '';
 }
 
 function savePostsToStorage() {
@@ -655,3 +688,67 @@ window.deleteProject = deleteProject;
 window.editPost = editPost;
 window.deletePost = deletePost;
 window.logout = logout;
+window.clearProjectImage = clearProjectImage;
+window.clearPostImage = clearPostImage;
+
+/**
+ * Image upload setup for project and post forms
+ * Converts uploaded files to base64 data URLs for storage in LocalStorage
+ */
+function setupImageUpload() {
+  // Project image file upload
+  const projFileInput = document.getElementById('proj-image-file');
+  if (projFileInput) {
+    projFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const previewBox = document.getElementById('proj-image-preview');
+        const previewImg = document.getElementById('proj-image-preview-img');
+        const urlInput = document.getElementById('proj-image');
+        previewImg.src = event.target.result;
+        previewBox.style.display = 'block';
+        urlInput.value = ''; // clear URL field when file is uploaded
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Post image file upload
+  const postFileInput = document.getElementById('post-image-file');
+  if (postFileInput) {
+    postFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const previewBox = document.getElementById('post-image-preview');
+        const previewImg = document.getElementById('post-image-preview-img');
+        const urlInput = document.getElementById('post-image-input');
+        previewImg.src = event.target.result;
+        previewBox.style.display = 'block';
+        urlInput.value = ''; // clear URL field when file is uploaded
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+}
+
+function clearProjectImage() {
+  const previewBox = document.getElementById('proj-image-preview');
+  const previewImg = document.getElementById('proj-image-preview-img');
+  const fileInput = document.getElementById('proj-image-file');
+  if (previewBox) previewBox.style.display = 'none';
+  if (previewImg) previewImg.src = '';
+  if (fileInput) fileInput.value = '';
+}
+
+function clearPostImage() {
+  const previewBox = document.getElementById('post-image-preview');
+  const previewImg = document.getElementById('post-image-preview-img');
+  const fileInput = document.getElementById('post-image-file');
+  if (previewBox) previewBox.style.display = 'none';
+  if (previewImg) previewImg.src = '';
+  if (fileInput) fileInput.value = '';
+}

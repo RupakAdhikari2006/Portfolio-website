@@ -69,12 +69,9 @@ async function loadData(type) {
  * Route page logic based on current file/path
  */
 async function initPageData() {
-  // Clear old template cache to load Rupak's actual data
-  const localProj = localStorage.getItem('portfolio_projects');
-  if (localProj && (localProj.includes('Elena Vance') || localProj.includes('Aura - Minimal'))) {
-    localStorage.removeItem('portfolio_projects');
-    localStorage.removeItem('portfolio_posts');
-  }
+  // Always clear LocalStorage so the JSON files are the single source of truth
+  localStorage.removeItem('portfolio_projects');
+  localStorage.removeItem('portfolio_posts');
 
   const path = window.location.pathname;
   const page = path.split('/').pop() || 'index.html';

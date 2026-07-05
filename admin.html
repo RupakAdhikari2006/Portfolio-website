@@ -141,8 +141,19 @@
           </div>
 
           <div class="form-group">
-            <label for="proj-image">Cover Image URL</label>
-            <input type="url" id="proj-image" class="form-control" placeholder="https://unsplash.com/..." value="">
+            <label>Cover Image</label>
+            <div class="image-upload-group">
+              <label class="image-upload-label" for="proj-image-file">
+                <span class="upload-icon">📁</span> Upload Image File
+              </label>
+              <input type="file" id="proj-image-file" accept="image/*" class="file-input-hidden">
+              <div id="proj-image-preview" class="image-preview-box" style="display:none;">
+                <img id="proj-image-preview-img" src="" alt="Preview">
+                <button type="button" class="remove-image-btn" onclick="clearProjectImage()">✕ Remove</button>
+              </div>
+              <p class="image-upload-or">— or paste image URL below —</p>
+              <input type="url" id="proj-image" class="form-control" placeholder="https://example.com/image.jpg">
+            </div>
           </div>
 
           <div class="form-group">
@@ -214,8 +225,19 @@
           </div>
 
           <div class="form-group">
-            <label for="post-image-input">Feature Image URL</label>
-            <input type="url" id="post-image-input" class="form-control" placeholder="https://unsplash.com/...">
+            <label>Feature Image</label>
+            <div class="image-upload-group">
+              <label class="image-upload-label" for="post-image-file">
+                <span class="upload-icon">📁</span> Upload Image File
+              </label>
+              <input type="file" id="post-image-file" accept="image/*" class="file-input-hidden">
+              <div id="post-image-preview" class="image-preview-box" style="display:none;">
+                <img id="post-image-preview-img" src="" alt="Preview">
+                <button type="button" class="remove-image-btn" onclick="clearPostImage()">✕ Remove</button>
+              </div>
+              <p class="image-upload-or">— or paste image URL below —</p>
+              <input type="url" id="post-image-input" class="form-control" placeholder="https://example.com/image.jpg">
+            </div>
           </div>
 
           <div class="form-group">
@@ -327,9 +349,8 @@
     <div class="container footer-wrapper">
       <p>&copy; 2026 Rupak Adhikari. Hand-coded with patience.</p>
       <div class="footer-socials">
-        <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a>
+        <a href="https://github.com/RupakAdhikari2006" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://www.linkedin.com/in/rupak-adhikari-40b436344/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       </div>
     </div>
   </footer>
